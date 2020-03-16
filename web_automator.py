@@ -15,12 +15,12 @@ name_executable = ""
 
 if platform.system() == "Windows":
     if not os.path.isfile("chromedriver.exe"):
-        urllib.request.urlretrieve("https://chromedriver.storage.googleapis.com/81.0.4044.20/chromedriver_win32.zip", "chromedriver.zip")
+        urllib.request.urlretrieve("https://chromedriver.storage.googleapis.com/80.0.3987.106/chromedriver_win32.zip", "chromedriver.zip")
 
         with zipfile.ZipFile("chromedriver.zip", 'r') as zip_ref:
             zip_ref.extractall(cd)
         
-        name_executable = "chromedriver.exe"
+    name_executable = "chromedriver.exe"
 
 elif platform.system() == "Linux":
     if not os.path.isfile("chromedriver"):
@@ -29,7 +29,7 @@ elif platform.system() == "Linux":
         with zipfile.ZipFile("chromedriver.zip", 'r') as zip_ref:
             zip_ref.extractall(cd)
         
-        name_executable = "chromedriver"
+    name_executable = "chromedriver"
 
 else:
     if not os.path.isfile("chromedriver"):
@@ -38,10 +38,11 @@ else:
         with zipfile.ZipFile("chromedriver.zip", 'r') as zip_ref:
             zip_ref.extractall(cd)
         
-        name_executable = "chromedriver"
+    name_executable = "chromedriver"
 
-executable_path = os.path.join(os.getcwd() , name_executable)
 
+executable_path = os.path.join("chromedriver" , name_executable)
+print(executable_path)
 
 def get_arguments():
 		parser = argparse.ArgumentParser(description='Genesis Automator')
@@ -64,16 +65,23 @@ def cmd():
     s3 = driver.find_element_by_class_name("saveButton")
     s3.click()
 
-    s4 = driver.find_element_by_class_name("formButtonIcon")
-    s4.click()
+    try:
+        s4 = driver.find_element_by_class_name("formButtonIcon")
+        s4.click()
 
-    s5 = Select(driver.find_element_by_id('attendanceType'))
-    s5.select_by_visible_text('Present')
+        s5 = Select(driver.find_element_by_id('attendanceType'))
+        s5.select_by_visible_text('Present')
 
-    s6 = driver.find_element_by_class_name("saveButton")
-    s6.click()
+        s6 = driver.find_element_by_class_name("saveButton")
+        s6.click()
 
-schedule.every().day.at("08:00").do(cmd,'It is 08:00. Form filled Successfully')
+        print('It is 08:00. Form filled Successfully')
+
+    except Exception:
+        driver.close()
+        print("Make sure email and password are correct")
+
+schedule.every().day.at("08:00").do(cmd)
 
 while True:
     schedule.run_pending()
